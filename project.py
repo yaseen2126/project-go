@@ -1,35 +1,48 @@
 import streamlit as st
-import string
 import random
+import string
 
-def generate_password(length, use_digits=True, use_letters=True, use_special=True):
-    character_list = ""
-    if use_digits:
-        character_list += string.digits
-    if use_letters:
-        character_list += string.ascii_letters
+st.title("Bano Qabil")
+
+st.sidebar.markdown("""
+    <div style="display: flex; justify-content: center;">
+        <img src="https://banoqabil.pk/media/logo.png" width="200">
+    </div>
+""", unsafe_allow_html=True)
+
+def generate_password(length, use_uppercase, use_numbers, use_special):
+    characters = string.ascii_lowercase
+    if use_uppercase:
+        characters += string.ascii_uppercase
+    if use_numbers:
+        characters += string.digits
     if use_special:
-        character_list += string.punctuation
-    if not (use_digits or use_letters or use_special):
-        raise ValueError("At least one character set must be selected.")
+        characters += string.punctuation
 
-    return ''.join(random.choices(character_list, k=length))
+    password = ''.join(random.choice(characters) for i in range(length))
+    return password
 
 def main():
-    st.title("Random Password Generator")
+    st.sidebar.title("Navigation")
+    tab = st.sidebar.radio("", ["Home", "About us", "Contact us"])
 
-    length = st.number_input("Enter password length:", min_value=1, step=1, value=8)
+    if tab == "Home":
+        st.title("Password Generator")
+        length = st.slider("Select password length", 6, 30, 12)
+        use_uppercase = st.checkbox("Include Uppercase Letters")
+        use_numbers = st.checkbox("Include Numbers")
+        use_special = st.checkbox("Include Special Characters")
 
-    use_digits = st.checkbox("Include Digits (0-9)", value=True)
-    use_letters = st.checkbox("Include Letters (A-Z, a-z)", value=True)
-    use_special = st.checkbox("Include Special Characters", value=True)
-
-    if st.button("Generate Password"):
-        try:
-            password = generate_password(length, use_digits, use_letters, use_special)
-            st.success("Your random password is: " + password)
-        except ValueError as ve:
-            st.error("Error: " + str(ve))
+        if st.button("Generate Password"):
+            password = generate_password(length, use_uppercase, use_numbers, use_special)
+            st.success("Your generated password is:")
+            st.write(password)
+    elif tab == "About us":
+        st.title("About Us")
+        
+    elif tab == "Contact us":
+        st.title("Contact Us")
+        st.write("Email: www.yaseenkhan2126@gmail.com")
 
 if __name__ == "__main__":
     main()
