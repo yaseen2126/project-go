@@ -1,44 +1,21 @@
 import streamlit as st
-import random
 import string
+import random
 
-st.title("Bano Qabil")
-
-st.sidebar.markdown("""
-    <div style="display: flex; justify-content: center;">
-        <img src="https://banoqabil.pk/media/logo.png" width="200">
-    </div>
-""", unsafe_allow_html=True)
-
-def generate_password(length, use_uppercase, use_numbers, use_special):
-    characters = string.ascii_lowercase
-    if use_uppercase:
-        characters += string.ascii_uppercase
-    if use_numbers:
-        characters += string.digits
+def generate_password(length, use_digits=True, use_letters=True, use_special=True):
+    character_list = ""
+    if use_digits:
+        character_list += string.digits
+    if use_letters:
+        character_list += string.ascii_letters
     if use_special:
-        characters += string.punctuation
+        character_list += string.punctuation
+    if not (use_digits or use_letters or use_special):
+        raise ValueError("At least one character set must be selected.")
 
-    password = ''.join(random.choice(characters) for i in range(length))
-    return password
+    return ''.join(random.choices(character_list, k=length))
 
-def main():
-    st.sidebar.title("Navigation")
-    tab = st.sidebar.radio("", ["Home", "About us", "Contact us"])
-
-    if tab == "Home":
-        st.title("Password Generator")
-        length = st.slider("Select password length", 6, 30, 12)
-        use_uppercase = st.checkbox("Include Uppercase Letters")
-        use_numbers = st.checkbox("Include Numbers")
-        use_special = st.checkbox("Include Special Characters")
-
-        if st.button("Generate Password"):
-            password = generate_password(length, use_uppercase, use_numbers, use_special)
-            st.success("Your generated password is:")
-            st.write(password)
-            
-   elif "about_us"():
+def about_us():
     st.title("About Us")
     st.write("""
     Welcome to the Random Password Generator app! We're dedicated to providing a simple and secure solution for generating random passwords tailored to your needs. Our goal is to empower users like you to create strong and unique passwords, enhancing the security of your online accounts.
@@ -63,10 +40,24 @@ def main():
 
     - The Random Password Generator Team
     """)
-        
-    elif tab == "Contact us":
-        st.title("Contact Us")
-        st.write("Email: www.yaseenkhan2126@gmail.com")
+
+def main():
+    st.title("Random Password Generator")
+
+    length = st.number_input("Enter password length:", min_value=1, step=1, value=8)
+
+    use_digits = st.checkbox("Include Digits (0-9)", value=True)
+    use_letters = st.checkbox("Include Letters (A-Z, a-z)", value=True)
+    use_special = st.checkbox("Include Special Characters", value=True)
+
+    if st.button("Generate Password"):
+        try:
+            password = generate_password(length, use_digits, use_letters, use_special)
+            st.success("Your random password is: " + password)
+        except ValueError as ve:
+            st.error("Error: " + str(ve))
+
+    about_us()
 
 if __name__ == "__main__":
     main()
