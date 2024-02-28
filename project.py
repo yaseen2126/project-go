@@ -15,8 +15,28 @@ def generate_password(length, use_digits=True, use_letters=True, use_special=Tru
 
     return ''.join(random.choices(character_list, k=length))
 
-def about_us():
-    st.title("About Us")
+
+
+def main():
+    st.title("Random Password Generator")
+
+    tabs = st.radio("Navigate", ["Generate Password", "About Us"])
+
+    if tabs == "Generate Password":
+        length = st.number_input("Enter password length:", min_value=1, step=1, value=8)
+
+        use_digits = st.checkbox("Include Digits (0-9)", value=True)
+        use_letters = st.checkbox("Include Letters (A-Z, a-z)", value=True)
+        use_special = st.checkbox("Include Special Characters", value=True)
+
+        if st.button("Generate Password"):
+            try:
+                password = generate_password(length, use_digits, use_letters, use_special)
+                st.success("Your random password is: " + password)
+            except ValueError as ve:
+                st.error("Error: " + str(ve))
+
+    def about_us():
     st.write("""
     Welcome to the Random Password Generator app! We're dedicated to providing a simple and secure solution for generating random passwords tailored to your needs. Our goal is to empower users like you to create strong and unique passwords, enhancing the security of your online accounts.
 
@@ -40,24 +60,6 @@ def about_us():
 
     - The Random Password Generator Team
     """)
-
-def main():
-    st.title("Random Password Generator")
-
-    length = st.number_input("Enter password length:", min_value=1, step=1, value=8)
-
-    use_digits = st.checkbox("Include Digits (0-9)", value=True)
-    use_letters = st.checkbox("Include Letters (A-Z, a-z)", value=True)
-    use_special = st.checkbox("Include Special Characters", value=True)
-
-    if st.button("Generate Password"):
-        try:
-            password = generate_password(length, use_digits, use_letters, use_special)
-            st.success("Your random password is: " + password)
-        except ValueError as ve:
-            st.error("Error: " + str(ve))
-
-    about_us()
 
 if __name__ == "__main__":
     main()
