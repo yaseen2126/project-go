@@ -38,7 +38,7 @@ def main():
             st.success("Your generated password is:")
             st.write(password)
             
-   elif about_us():
+   elif "about_us"():
     st.title("About Us")
     st.write("""
     Welcome to the Random Password Generator app! We're dedicated to providing a simple and secure solution for generating random passwords tailored to your needs. Our goal is to empower users like you to create strong and unique passwords, enhancing the security of your online accounts.
