@@ -1,48 +1,35 @@
+import streamlit as st
 import string
 import random
- 
-# Getting password length
-length = int(input("Enter password length: "))
- 
-print('''Choose character set for password from these : 
-         1. Digits
-         2. Letters
-         3. Special characters
-         4. Exit''')
- 
-characterList = ""
- 
-# Getting character set for password
-while(True):
-    choice = int(input("Pick a number "))
-    if(choice == 1):
-         
-        # Adding letters to possible characters
-        characterList += string.ascii_letters
-    elif(choice == 2):
-         
-        # Adding digits to possible characters
-        characterList += string.digits
-    elif(choice == 3):
-         
-        # Adding special characters to possible
-        # characters
-        characterList += string.punctuation
-    elif(choice == 4):
-        break
-    else:
-        print("Please pick a valid option!")
- 
-password = []
- 
-for i in range(length):
-   
-    # Picking a random character from our 
-    # character list
-    randomchar = random.choice(characterList)
-     
-    # appending a random character to password
-    password.append(randomchar)
- 
-# printing password as a string
-print("The random password is " + "".join(password))
+
+def generate_password(length, use_digits=True, use_letters=True, use_special=True):
+    character_list = ""
+    if use_digits:
+        character_list += string.digits
+    if use_letters:
+        character_list += string.ascii_letters
+    if use_special:
+        character_list += string.punctuation
+    if not (use_digits or use_letters or use_special):
+        raise ValueError("At least one character set must be selected.")
+
+    return ''.join(random.choices(character_list, k=length))
+
+def main():
+    st.title("Random Password Generator")
+
+    length = st.number_input("Enter password length:", min_value=1, step=1, value=8)
+
+    use_digits = st.checkbox("Include Digits (0-9)", value=True)
+    use_letters = st.checkbox("Include Letters (A-Z, a-z)", value=True)
+    use_special = st.checkbox("Include Special Characters", value=True)
+
+    if st.button("Generate Password"):
+        try:
+            password = generate_password(length, use_digits, use_letters, use_special)
+            st.success("Your random password is: " + password)
+        except ValueError as ve:
+            st.error("Error: " + str(ve))
+
+if __name__ == "__main__":
+    main()
